@@ -6,6 +6,7 @@ var totalCoroa = 0;
 var total = 0;
 var saldoRound = 8;
 var roundsArray = [];
+var roundsToComplete = [];
 
 function randomBetween(min, max) { // min and max included 
   return Math.floor(Math.random() * (max - min + 1) + min)
@@ -50,6 +51,11 @@ function addCara(){
 `); 
 }
 
+function addRoundsToComplete(){
+  roundsToComplete.push(count);
+};
+
+
 function addEachRound(){
   roundsArray.push(saldoRound);
 };
@@ -73,6 +79,7 @@ $('.btn-add').on('click', function(e) {
           if (totalCoroa - totalCara == 3){
             addCoroa();
             addEachRound();
+            addRoundsToComplete();
             reset();
           } else {
             addCoroa();
@@ -86,6 +93,7 @@ $('.btn-add').on('click', function(e) {
           if (totalCara - totalCoroa == 3){
             addCara();
             addEachRound();
+            addRoundsToComplete();
             reset();
           } else {
             addCara();
@@ -104,6 +112,7 @@ $('.btn-add').on('click', function(e) {
 
 $('.btn-calc-media').on('click', function(){
   let media = 0;
+  let mediaRoundsToComplete = 0;
   let contador = 0;
   let distancia = 0;
   let desvio = 0;
@@ -116,18 +125,34 @@ $('.btn-calc-media').on('click', function(){
 
   media = media/contador;
 
-  for (let i in roundsArray){
-    distancia = roundsArray[i] - media;
-    let quadradoDistancia = distancia*distancia;
-    somaQuadradoDistancias += quadradoDistancia;
-   
+  contador = 0;
+
+
+  for (let i in roundsToComplete){
+    mediaRoundsToComplete += roundsToComplete[i];
+    contador++;
   }
 
-  desvio = Math.sqrt(((somaQuadradoDistancias)/(contador)));
+  mediaRoundsToComplete = mediaRoundsToComplete/contador;
 
-  alert(`${media} (Desvio = ${desvio})
-    Rodadas: ${contador}
+  // for (let i in roundsArray){
+  //   distancia = roundsArray[i] - media;
+  //   let quadradoDistancia = distancia*distancia;
+  //   somaQuadradoDistancias += quadradoDistancia;
+   
+  // }
+
+  // desvio = Math.sqrt(((somaQuadradoDistancias)/(contador)));
+
+  $('#modal .modal-body').html(`
+    Rounds: ${contador};</br>
+    Média de Rendimentos: R$ ${media.toFixed(2)};</br>
+    Jogadas para completar 1 round: ${mediaRoundsToComplete.toFixed(2)};
   `);
+
+  console.log(roundsToComplete);
+
+  $('#modal').modal('show')
 });
 
 $('.btn-reset').on('click', function(){
@@ -138,5 +163,6 @@ $('.btn-reset').on('click', function(){
   total = 0;
   saldoRound = 8;
   roundsArray = [];
+  roundsToComplete = [];
   table.html(` `);
 })
